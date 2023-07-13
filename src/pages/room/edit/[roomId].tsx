@@ -1,9 +1,10 @@
-import { getRoomId } from "@/api/room";
+import { getRoomId, updateRoom } from "@/api/room";
 import Layout from "@/components/layout";
 import Spinner from "@/components/spinner";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { log } from "console";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
 import { toast } from "react-toastify";
@@ -42,6 +43,44 @@ function Page({}: Props) {
     queryFn: async () => await getRoomId(room_id),
   });
 
+  const mutation = useMutation({
+    mutationKey: ["update-room-room_type"],
+    mutationFn: async (data: any) => await updateRoom(data, room_id),
+    onSuccess(data, variables, context) {
+      toast.success("Sửa thành công");
+      back();
+    },
+    onError(error, variables, context) {
+      toast.error(`Sửa thất bại ${error}`);
+    },
+  });
+
+  const onSubmit: SubmitHandler<Inputs> = (data: any) => {
+    mutation.mutate(data);
+    console.log(data, "input");
+  };
+  console.log(mutation);
+  const goBack = () => {
+    router.back();
+  };
+  console.log(query.data?.room_name, "hahh");
+
+  useEffect(() => {
+    if (query.data) {
+      setValue("room_name", query.data?.room_name);
+      setValue("capacity", query.data?.capacity);
+      setValue("facilities", query.data?.facilities);
+      setValue("prize", query.data?.prize);
+      // setValue("file", query.data?.imgPath);
+      setValue("other_facilities", query.data?.__roomType__?.other_facilities);
+      setValue("wifi", query.data?.__roomType__?.wifi);
+      setValue("pool", query.data?.__roomType__?.pool);
+      setValue("heater", query.data?.__roomType__?.heater);
+      setValue("AC", query.data?.__roomType__?.AC);
+      setValue("parking", query.data?.__roomType__?.parking);
+    }
+  }, []);
+
   return (
     <Layout>
       <div className="flex justify-center items-center mt-10">
@@ -50,7 +89,7 @@ function Page({}: Props) {
         ) : (
           <form
             className="min-w-[calc(50%)]"
-            // onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onSubmit)}
             encType="multipart/form-data"
           >
             <label className="block text-5xl font-medium leading-6 text-gray-900 my-11">
@@ -73,9 +112,7 @@ function Page({}: Props) {
                       <textarea
                         {...register("room_name")}
                         name="room_name"
-                        value={query?.data?.room_name}
                         className="pl-4 block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
-                        defaultValue={""}
                       />
                     </div>
                   </div>
@@ -93,7 +130,6 @@ function Page({}: Props) {
                           min: 1,
                           max: 10,
                         })}
-                        value={query?.data?.capacity}
                         id="capacity"
                         placeholder="Min 1 Max 10"
                         name="capacity"
@@ -122,7 +158,6 @@ function Page({}: Props) {
                             min: 1,
                             max: 10000000,
                           })}
-                          value={query?.data?.prize}
                           id="prize"
                           placeholder="Min 1 & Max 100.000.000"
                           name="prize"
@@ -149,8 +184,6 @@ function Page({}: Props) {
                           id="facilities"
                           name="facilities"
                           className="pl-4 block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
-                          defaultValue={""}
-                          value={query?.data?.facilities}
                         />
                       </div>
                     </div>
@@ -164,7 +197,6 @@ function Page({}: Props) {
                           <Controller
                             name="wifi"
                             control={control}
-                            defaultValue={false}
                             render={({ field }) => (
                               <input
                                 {...field}
@@ -172,6 +204,9 @@ function Page({}: Props) {
                                 type="checkbox"
                                 value=""
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                defaultChecked={
+                                  query.data?.__roomType__.wifi === true
+                                }
                               />
                             )}
                           />
@@ -186,7 +221,6 @@ function Page({}: Props) {
                           <Controller
                             name="AC"
                             control={control}
-                            defaultValue={false}
                             render={({ field }) => (
                               <input
                                 {...field}
@@ -194,6 +228,9 @@ function Page({}: Props) {
                                 type="checkbox"
                                 value=""
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                defaultChecked={
+                                  query.data?.__roomType__.AC === true
+                                }
                               />
                             )}
                           />
@@ -208,7 +245,6 @@ function Page({}: Props) {
                           <Controller
                             name="heater"
                             control={control}
-                            defaultValue={false}
                             render={({ field }) => (
                               <input
                                 {...field}
@@ -216,6 +252,9 @@ function Page({}: Props) {
                                 type="checkbox"
                                 value=""
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                defaultChecked={
+                                  query.data?.__roomType__.heater === true
+                                }
                               />
                             )}
                           />
@@ -230,7 +269,6 @@ function Page({}: Props) {
                           <Controller
                             name="parking"
                             control={control}
-                            defaultValue={false}
                             render={({ field }) => (
                               <input
                                 {...field}
@@ -238,6 +276,9 @@ function Page({}: Props) {
                                 type="checkbox"
                                 value=""
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                defaultChecked={
+                                  query.data?.__roomType__.parking === true
+                                }
                               />
                             )}
                           />
@@ -252,7 +293,6 @@ function Page({}: Props) {
                           <Controller
                             name="pool"
                             control={control}
-                            defaultValue={false}
                             render={({ field }) => (
                               <input
                                 {...field}
@@ -260,6 +300,9 @@ function Page({}: Props) {
                                 type="checkbox"
                                 value=""
                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                defaultChecked={
+                                  query.data?.__roomType__.pool === true
+                                }
                               />
                             )}
                           />
@@ -283,10 +326,6 @@ function Page({}: Props) {
                               {...register("other_facilities")}
                               id="other_facilities"
                               className="pl-4 block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
-                              defaultValue={""}
-                              value={
-                                query?.data?.__roomType__?.other_facilities
-                              }
                             />
                           </div>
                         </div>
@@ -297,6 +336,7 @@ function Page({}: Props) {
                           </h1>
                           <input
                             type="file"
+                            id="file"
                             required
                             {...register("file", {
                               validate: {
@@ -313,6 +353,11 @@ function Page({}: Props) {
 
                           {errors.file && <p>{errors.file.message}</p>}
                         </div>
+                        <img
+                          className="w-[200px] h-[200px]"
+                          src={`${process.env.NEXT_PUBLIC_ENDPOINT}/${query.data?.imgPath}`}
+                          alt=""
+                        />
                       </div>
                     </div>
                   </div>
@@ -324,6 +369,7 @@ function Page({}: Props) {
               <button
                 type="button"
                 className="text-sm font-semibold leading-6 text-gray-900"
+                onClick={goBack}
               >
                 Cancel
               </button>

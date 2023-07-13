@@ -11,9 +11,12 @@ import CommentModal from "@/components/comment-modal";
 type Props = {};
 
 function Page({}: Props) {
-  const dateTime = new Date();
-  const iosDateTime = dateTime.toISOString();
-  console.log(iosDateTime);
+  const currentDateTime = new Date();
+  const vietnamTime = new Date(
+    currentDateTime.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+  );
+  const formattedTime = vietnamTime.toISOString();
+  console.log(formattedTime, "ios");
   const router = useRouter();
   const params = { pageSize: 10, pageNumber: 1, ...router.query };
 
@@ -115,8 +118,7 @@ function Page({}: Props) {
                     )}
                   </div>
                   <div>
-                    {element?.status === "completed" &&
-                    iosDateTime >= element?.check_in ? (
+                    {element?.status === "completed" ? (
                       <CommentModal
                         room_id={element?.note}
                         reservation_id={element?.reservation_id}

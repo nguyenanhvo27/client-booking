@@ -20,7 +20,7 @@ export const updateProfile = async (data: any) => {
     if (data?.first_name) {
       formData.append('first_name', data?.first_name);
     }
-    // formData.append('first_name', data.first_name);
+     formData.append('first_name', data.first_name);
     formData.append('last_name', data.last_name);
     formData.append('location', data.location);
     formData.append('phone_number', data.phone_number);

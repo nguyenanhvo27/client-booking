@@ -90,6 +90,18 @@ export const remove = async (reservation_id: number) => {
   }
 };
 
+export const success = async (reservation_id: number) => {
+  try {
+    const response = await axiosInterceptor.put(
+      `/reservation/success/${reservation_id}`
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error('Update reservation fail!');
+  }
+};
+
 
 
 

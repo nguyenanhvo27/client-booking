@@ -25,6 +25,10 @@ const Page = (props: Props) => {
   const handleOnClickReservation = async (id: number) => {
     await router.push(`/reservation/${id}`);
   };
+  const handleOnClickEditHotel = async (id: number) => {
+    await router.push(`/hotel/edit/${id}`);
+  };
+
   return (
     <Layout>
       <div className="m-auto">
@@ -87,12 +91,6 @@ const Page = (props: Props) => {
                         scope="col"
                         className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
                       >
-                        XÓA
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
-                      >
                         Đặt Phòng
                       </th>
                     </tr>
@@ -127,22 +125,15 @@ const Page = (props: Props) => {
                           <a
                             className="text-green-500 hover:text-green-700"
                             href="#"
-                            //   key={hotel?.hotel_id}
-                            // onClick={async () =>
-                            //     await handleOnClickEdithotel(hotel?.hotel_id)
-                            //   }
+                            key={hotel?.hotel_id}
+                            onClick={async () =>
+                              await handleOnClickEditHotel(hotel?.hotel_id)
+                            }
                           >
                             Sửa
                           </a>
                         </td>
-                        <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                          <a
-                            className="text-red-500 hover:text-red-700"
-                            href="#"
-                          >
-                            Xóa
-                          </a>
-                        </td>
+
                         <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                           <button
                             className="h-8 px-4 m-2 text-sm text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"

@@ -420,7 +420,7 @@ const Page = (props: Props) => {
                     <div className=" flex grid grid-cols-1 ">
                       {/* md:grid-cols-2 lg:grid-cols-2 gap-6 p-6 */}
                       {query?.data?.[0]?.map((room: any) => (
-                        <div className="cursor-pointer flex rounded-xl bg-white p-3 shadow-lg hover:shadow-xl">
+                        <div className="cursor-pointer flex rounded-xl bg-white p-3 drop-shadow-2xl hover:shadow-xl my-2">
                           <div className="relative flex items-end overflow-hidden rounded-xl">
                             <img
                               className="h-[250px] w-[500px]"
@@ -439,7 +439,7 @@ const Page = (props: Props) => {
                               </svg>
 
                               <span className="ml-1 text-sm text-slate-400">
-                                4.9
+                                {room?.__roomType__?.rating}
                               </span>
                             </div>
                           </div>
@@ -458,21 +458,21 @@ const Page = (props: Props) => {
                               Địa chỉ: {room?.__hotel__?.location}
                             </p>
                             <p className=" flex mt-1 text-sm text-black font-medium">
-                              <p>Sức chứa </p>
+                              <p>Sức chứa: </p>
                               <p className="text-red-400">
-                                {":  "} {room?.capacity}
+                                {"  "} {room?.capacity}
                               </p>
                             </p>
                             <p className=" flex mt-1 text-sm text-black font-medium">
-                              <p>Tên Phòng </p>
+                              <p>Tên Phòng: </p>
                               <p className="text-red-400">
-                                {":  "} {room?.room_name}
+                                {"  "} {room?.room_name}
                               </p>
                             </p>
                             <p className=" flex mt-1 text-sm text-black font-medium">
-                              <p>Loại phòng </p>
+                              <p>Loại phòng: </p>
                               <p className="text-red-400">
-                                {":  "} {room?.facilities}
+                                {"  "} {room?.facilities}
                               </p>
                             </p>
 

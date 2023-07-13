@@ -1,16 +1,15 @@
-import React from 'react';
-import Layout from '@/components/layout';
-import Link from 'next/link';
-import Select from 'react-select';
-import Datepicker from 'react-tailwindcss-datepicker';
-import { DateRangeType } from 'react-tailwindcss-datepicker/dist/types';
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { optionProvince } from '@/constants/option-province';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
-import PostCategory from '@/components/PostCategory';
-import PostDiscovery from '@/components/PostDiscovery';
-
+import React from "react";
+import Layout from "@/components/layout";
+import Link from "next/link";
+import Select from "react-select";
+import Datepicker from "react-tailwindcss-datepicker";
+import { DateRangeType } from "react-tailwindcss-datepicker/dist/types";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { optionProvince } from "@/constants/option-province";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import PostCategory from "@/components/PostCategory";
+import PostDiscovery from "@/components/PostDiscovery";
 
 type Inputs = {
   province: string;
@@ -30,14 +29,10 @@ function Page() {
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const startDate =
-      (data.dateRange?.startDate &&
-        data.dateRange?.startDate.toString()) ||
-      '';
+      (data.dateRange?.startDate && data.dateRange?.startDate.toString()) || "";
     const endDate =
-      (data.dateRange?.endDate &&
-        data.dateRange?.endDate.toString()) ||
-      '';
-    const traveller = data.traveller.toString() || '';
+      (data.dateRange?.endDate && data.dateRange?.endDate.toString()) || "";
+    const traveller = data.traveller.toString() || "";
 
     await router.push({
       pathname: `/room/list`,
@@ -79,14 +74,12 @@ function Page() {
               </defs>
             </svg>
           </div>
-          {(session?.user as any)?.role === 'hotelier' ? (
+          {(session?.user as any)?.role === "hotelier" ? (
             <div className="text-center mt-4">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-               Chủ Khách Sạn
+                Chủ Khách Sạn
               </h1>
-              <p className="mt-6 text-lg leading-8 text-gray-600">
-                
-              </p>
+              <p className="mt-6 text-lg leading-8 text-gray-600"></p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <Link
                   href="hotel/post"
@@ -99,15 +92,15 @@ function Page() {
           ) : (
             <React.Fragment />
           )}
-          {(session?.user as any)?.role !== 'hotelier' ? (
+          {(session?.user as any)?.role !== "hotelier" ? (
             <div className="mx-auto max-w-full py-20 bg-[url('https://images2.thanhnien.vn/Uploaded/ngocthanh/2022_10_09/check-in-9148.jpg')] ">
               {/* bg-[url('https://images2.thanhnien.vn/Uploaded/ngocthanh/2022_10_09/check-in-9148.jpg')] */}
               <div className="hidden sm:mb-8 sm:flex sm:justify-center ">
-                <form className='mt-52' onSubmit={handleSubmit(onSubmit)}>
+                <form className="mt-52" onSubmit={handleSubmit(onSubmit)}>
                   <div className="space-y-12">
                     <div className="border-b border-gray-900/10 pb-12">
                       <h2 className="text-center font-semibold leading-7 text-gray-900 text-5xl">
-                        Tìm điểm đến 
+                        Tìm điểm đến
                       </h2>
 
                       <div className="mt-10 grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-12 rounded-md mb-2">
@@ -122,15 +115,11 @@ function Page() {
                             <Controller
                               name="province"
                               control={control}
-                              render={({
-                                field: { onChange, value },
-                              }) => (
+                              render={({ field: { onChange, value } }) => (
                                 <Select
                                   options={optionProvince}
                                   placeholder="Where ?"
-                                  onChange={(val) =>
-                                    val && onChange(val.value)
-                                  }
+                                  onChange={(val) => val && onChange(val.value)}
                                 />
                               )}
                               rules={{ required: true }}
@@ -154,14 +143,10 @@ function Page() {
                             <Controller
                               name="dateRange"
                               control={control}
-                              render={({
-                                field: { onChange, value },
-                              }) => (
+                              render={({ field: { onChange, value } }) => (
                                 <Datepicker
                                   value={value}
-                                  onChange={(val) =>
-                                    val && onChange(val)
-                                  }
+                                  onChange={(val) => val && onChange(val)}
                                   minDate={new Date()}
                                 />
                               )}
@@ -184,7 +169,7 @@ function Page() {
                           </label>
                           <div className="mt-1">
                             <input
-                              {...register('traveller', {
+                              {...register("traveller", {
                                 required: true,
                                 min: 1,
                                 max: 10,
@@ -248,26 +233,30 @@ function Page() {
             </svg>
           </div>
         </div>
-        <div className='my-11 mx-3'>
-              <div className='text-center'>
-              <h1 className='text-3xl font-medium'>Điểm Đến Đang Thịnh Hành</h1>
-              </div>
-              <div className='text-center'>
-              <h1 className='text-sm font-normal'>Các địa điểm được lựa chọn du lịch phổ biến nhất hiện nay tại Việt Nam</h1>
-              </div>
+        <div className="my-11 mx-3">
+          <div className="text-center">
+            <h1 className="text-3xl font-medium">Điểm Đến Đang Thịnh Hành</h1>
+          </div>
+          <div className="text-center">
+            <h1 className="text-sm font-normal">
+              Các địa điểm được lựa chọn du lịch phổ biến nhất hiện nay tại Việt
+              Nam
+            </h1>
+          </div>
+        </div>
+        <PostCategory />
+        <div className="my-5 mx-3 ">
+          <div className="text-center">
+            <h1 className="text-3xl font-medium text-center">
+              Khám phá dọc dải đất hình chữ S Việt Nam
+            </h1>
+          </div>
+          <div className="text-center">
+            <h1 className="text-sm font-normal">Biết đâu bạn sẽ hứng thú</h1>
+          </div>
+        </div>
+        <PostDiscovery />
       </div>
-     <PostCategory/>
-     <div className='my-5 mx-3 '>
-              <div className='text-center'>
-              <h1 className='text-3xl font-medium text-center'>Khám phá dọc dải đất hình chữ S Việt Nam</h1>
-              </div>
-              <div className='text-center'>
-              <h1 className='text-sm font-normal'>Biết đâu bạn sẽ hứng thú</h1>
-              </div>
-      </div>
-     <PostDiscovery/>
-      </div>
-     
     </Layout>
   );
 }

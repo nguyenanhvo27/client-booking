@@ -48,6 +48,7 @@ export const postRooms = async (data: any) => {
     formData.append('wifi', data.wifi);
     formData.append('parking', data.parking);
     formData.append('pool', data.pool);
+ 
 
     const response = await axiosInterceptor.post('/room', formData);
 
@@ -110,4 +111,50 @@ export const removeRoom = async (room_id?: string, room_type_id?:string) => {
     throw new Error('Get Rooms fail!');
   }
   
+};
+
+export const updateRoom = async (data: any,id:any) => {
+  try {
+    const formData = new FormData();
+    // formData.append('file', data.file[0]);
+    formData.append('AC', data.AC);
+    formData.append('capacity', data.capacity);
+    formData.append('room_name', data.room_name);
+    formData.append('facilities', data.facilities);
+    formData.append('heater', data.heater);
+    formData.append('hotel_id', data.hotel_id);
+    formData.append('other_facilities', data.other_facilities);
+    formData.append('prize', data.prize);
+    formData.append('wifi', data.wifi);
+    formData.append('parking', data.parking);
+    formData.append('pool', data.pool);
+    if (data?.file) {
+      formData.append('file', data?.file?.[0]);
+      
+    }
+
+    const response = await axiosInterceptor.patch(`/room/edit/${id}`,formData);
+    // , {
+      
+      // room_name:data.room_name,
+      // prize:data.prize,
+      // facilities:data.facilities,
+      // imgPath: data.file,
+      // "__roomType__": {
+      //   "room_type_id": id,
+      //   "prize": data.prize,
+      //   "capacity":data.capacity,
+      //   "wifi": data.wifi,
+      //   "AC": data.AC,
+      //   "heater": data.heater,
+      //   "parking": data.parking,
+      //   "pool": data.pool,
+      //   "other_facilities": data.other_facilities,
+   // }
+    // });
+    return response.data;
+
+  } catch (error) {
+    throw new Error('update Rooms fail!');
+  }
 };

@@ -1,12 +1,12 @@
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import Hotel from '@/assets/images/logo.jpeg';
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import SpinnerBasic from '@/components/spinner-basic';
-import { toast } from 'react-toastify';
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import Hotel from "@/assets/images/logo.jpeg";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { SubmitHandler, useForm } from "react-hook-form";
+import SpinnerBasic from "@/components/spinner-basic";
+import { toast } from "react-toastify";
 
 type Props = {};
 type Inputs = {
@@ -22,8 +22,8 @@ function Page({}: Props) {
   React.useEffect(() => {
     const isAuth = async () => {
       // If the user is already signed in, redirect to home page
-      if (status === 'authenticated') {
-        return await router.push('/');
+      if (status === "authenticated") {
+        return await router.push("/");
       }
     };
     isAuth().then((res) => res);
@@ -36,13 +36,13 @@ function Page({}: Props) {
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(true);
-    const response = await signIn('credentials', {
+    const response = await signIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,
     });
     if (!response?.ok) {
-      toast.error(`Login error: ${error}`);
+      toast.error(`Tài khoản của bạn đã bị khóa hoặc không có tài khoản này!`);
     }
     setLoading(false);
   };
@@ -50,7 +50,7 @@ function Page({}: Props) {
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <Link
-          href={'/'}
+          href={"/"}
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
           <Image className="w-8 h-8 mr-2" src={Hotel} alt="logo" />
@@ -74,7 +74,7 @@ function Page({}: Props) {
                   Your email
                 </label>
                 <input
-                  {...register('email')}
+                  {...register("email")}
                   type="email"
                   name="email"
                   id="email"
@@ -91,7 +91,7 @@ function Page({}: Props) {
                   Password
                 </label>
                 <input
-                  {...register('password')}
+                  {...register("password")}
                   type="password"
                   name="password"
                   id="password"
@@ -137,7 +137,7 @@ function Page({}: Props) {
                 </button>
               )}
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don’t have an account yet?{' '}
+                Don’t have an account yet?{" "}
                 <Link
                   href="/register"
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500"
@@ -146,14 +146,14 @@ function Page({}: Props) {
                 </Link>
               </p>
             </form>
-            <a href='/'>
-                <button
-                  type="submit"
-                  className=" text-white bg-yellow-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                >
-                  Cancel
-                </button>
-                </a>
+            <a href="/">
+              <button
+                type="submit"
+                className=" text-white bg-yellow-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              >
+                Cancel
+              </button>
+            </a>
           </div>
         </div>
       </div>

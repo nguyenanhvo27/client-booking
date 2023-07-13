@@ -224,40 +224,56 @@ function Page({}: Props) {
                                 {room?.facilities}
                               </td>
                               <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
-                                {room?.status}
+                                {room?.status === "pending" ? (
+                                  <p className="text-purple-700 font-semibold ">
+                                    Đợi duyệt
+                                  </p>
+                                ) : (
+                                  <></>
+                                )}
+                                {room?.status === "published" ? (
+                                  <p className="text-green-700 font-semibold">
+                                    Đang hiển thị
+                                  </p>
+                                ) : (
+                                  <></>
+                                )}
+                                {room?.status === "concealed" ? (
+                                  <p className="text-red-500 font-semibold">
+                                    Bị ẩn
+                                  </p>
+                                ) : (
+                                  <></>
+                                )}
                               </td>
 
                               <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                                <a
-                                  className="text-green-500 hover:text-green-700"
+                                <button
+                                  className="rounded-md bg-green-500 py-2 px-3 w-full text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                   key={room?.room_id}
                                   onClick={async () =>
                                     await handleOnClickEditRoom(room?.room_id)
                                   }
                                 >
-                                  Edit
-                                </a>
+                                  Sửa
+                                </button>
                               </td>
                               <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                                {room?.status === "pending" ? (
-                                  <></>
-                                ) : (
-                                  <button
-                                    className="text-red-500 hover:text-red-700"
-                                    key={room?.room_id}
-                                    onClick={() => {
-                                      if (
-                                        window.confirm(
-                                          `Bạn có chắc muôn xóa phòng ${room?.room_name} không?`
-                                        )
-                                      ) {
-                                        handleDeleteRoom(room.room_id);
-                                      }
-                                    }}
-                                  >
-                                    Delete
-                                  </button>
-                                )}
+                                <button
+                                  className="rounded-md bg-red-600 py-2 px-3 w-full text-sm font-semibold text-white shadow-sm hover:bg-red-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 "
+                                  key={room?.room_id}
+                                  onClick={() => {
+                                    if (
+                                      window.confirm(
+                                        `Bạn có chắc muôn xóa phòng ${room?.room_name} không?`
+                                      )
+                                    ) {
+                                      handleDeleteRoom(room.room_id);
+                                    }
+                                  }}
+                                >
+                                  Xóa
+                                </button>
                               </td>
                             </tr>
                           </tbody>

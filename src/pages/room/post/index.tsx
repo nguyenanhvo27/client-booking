@@ -3,7 +3,8 @@ import { postRooms } from "@/api/room";
 import Layout from "@/components/layout";
 import Spinner from "@/components/spinner";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/router";
+import { log } from "console";
+import { Router, useRouter } from "next/router";
 import React from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Select from "react-select";
@@ -50,7 +51,7 @@ function Page({}: Props) {
             label: e?.hotel_name,
             value: e?.hotel_id,
           });
-          console.log(data[0]);
+          console.log(data[0], "hotel");
         });
         setOptions(convert);
         setValue("hotel_id", options[0]?.value);
@@ -72,6 +73,11 @@ function Page({}: Props) {
   });
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     mutation.mutate(data);
+  };
+  const router = useRouter();
+
+  const goBack = () => {
+    router.back();
   };
 
   return (
@@ -337,7 +343,7 @@ function Page({}: Props) {
                             <textarea
                               {...register("other_facilities")}
                               id="other_facilities"
-                              className="pl-4 block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
+                              className="pl-4 block w-full h-[300px] rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
                               defaultValue={""}
                             />
                           </div>
@@ -374,7 +380,8 @@ function Page({}: Props) {
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <button
                 type="button"
-                className="text-sm font-semibold leading-6 text-gray-900"
+                className="rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-black shadow-sm hover:bg-orange-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={goBack}
               >
                 Cancel
               </button>

@@ -5,6 +5,7 @@ import {
   accept,
   cancelReservation,
   remove,
+  success,
 } from "../../api/reservation";
 import Layout from "@/components/layout";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +19,12 @@ type Props = {
 };
 
 function Page({ reservation_id }: Props) {
+  const currentDateTime = new Date();
+  const vietnamTime = new Date(
+    currentDateTime.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+  );
+  const formattedTime = vietnamTime.toISOString();
+  console.log(formattedTime, "hotelier");
   const router = useRouter();
   const params = { pageSize: 10, pageNumber: 1, ...router.query };
   const hotel_id =
@@ -61,6 +68,17 @@ function Page({ reservation_id }: Props) {
       toast.error("Update fail");
     },
   });
+  const reservationSuccess = useMutation({
+    mutationKey: ["reservation"],
+    mutationFn: success,
+    onSuccess(data, variables, context) {
+      toast.success("Nhận phòng thành công");
+      queryClient.invalidateQueries(["reservation"]);
+    },
+    onError(error, variables, context) {
+      toast.error("Nhận phòng không thành công");
+    },
+  });
 
   const handleCancel = (reservation_id: any) => {
     mutation.mutate(reservation_id);
@@ -72,6 +90,9 @@ function Page({ reservation_id }: Props) {
 
   const handleRemove = (reservation_id: any) => {
     mutationRemove.mutate(reservation_id);
+  };
+  const handleSuccess = (reservation_id: any) => {
+    reservationSuccess.mutate(reservation_id);
   };
 
   return (
@@ -217,13 +238,31 @@ function Page({ reservation_id }: Props) {
                             </div>
                             <div className="flex">
                               {reservation?.__transactions__?.[0]?.status ===
-                                "unpaid"}
-                              <span className="text-base font-medium">
-                                Trạng thái thanh toán:{" "}
-                              </span>
-                              <p className="text-red-700 font-bold text-base">
-                                Chưa thanh toán
-                              </p>
+                              "completed" ? (
+                                <div>
+                                  <span className="text-base font-medium">
+                                    Trạng thái thanh toán:{" "}
+                                  </span>
+                                  <p className="text-red-700 font-bold text-base">
+                                    đã thanh toán
+                                  </p>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+                              {reservation?.__transactions__?.[0]?.status ===
+                              "unpaid" ? (
+                                <div>
+                                  <span className="text-base font-medium">
+                                    Trạng thái thanh toán:{" "}
+                                  </span>
+                                  <p className="text-red-700 font-bold text-base">
+                                    chưa thanh toán
+                                  </p>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -252,11 +291,30 @@ function Page({ reservation_id }: Props) {
                           >
                             Hủy
                           </button>
+                          {formattedTime >= reservation?.check_in ? (
+                            <button
+                              className="h-8 px-4 m-2 text-sm text-white transition-colors duration-150 bg-blue-700 rounded-lg focus:shadow-outline "
+                              onClick={() => {
+                                if (
+                                  window.confirm(
+                                    "Mời khách nhận lịch đặt phòng?"
+                                  )
+                                ) {
+                                  handleSuccess(reservation?.reservation_id);
+                                }
+                              }}
+                            >
+                              Đã nhận phòng
+                            </button>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       </div>
                     ) : (
                       <></>
                     )}
+
                     {/* /////// status === cancel */}
                     {reservation?.status === "cancelled" ? (
                       <div className="flex">
@@ -339,7 +397,7 @@ function Page({ reservation_id }: Props) {
                                     Trạng thái thanh toán:{" "}
                                   </span>
                                   <p className="text-green-700 font-bold text-base">
-                                    Đã nhận phòng
+                                    Thanh toán thành công
                                   </p>
                                 </div>
                               ) : (

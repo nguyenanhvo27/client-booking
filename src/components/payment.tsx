@@ -111,7 +111,7 @@ function PaymentModal({ value, status }: Props) {
                                   mutation.mutate(String(value.transaction_id));
                                   const name = details.payer.name.given_name;
                                   toast.success(
-                                    `Transaction completed by ${name}`
+                                    `Thanh toán thành công bởi ${name}`
                                   );
                                   setOpen(false);
                                   //  window.location.reload();

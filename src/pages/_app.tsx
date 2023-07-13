@@ -1,17 +1,14 @@
-import * as React from 'react';
-import Router from 'next/router';
-import '@/styles/globals.css';
-import { NextPage } from 'next';
-import { AppProps } from 'next/app';
-import { SessionProvider } from 'next-auth/react';
-import ErrorBoundary from '@/components/error-boundary';
-import Spinner from '@/components/spinner';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import * as React from "react";
+import Router from "next/router";
+import "@/styles/globals.css";
+import { NextPage } from "next";
+import { AppProps } from "next/app";
+import { SessionProvider } from "next-auth/react";
+import ErrorBoundary from "@/components/error-boundary";
+import Spinner from "@/components/spinner";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -33,14 +30,14 @@ export default function App({
   const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    Router.events.on('routeChangeStart', () => {
+    Router.events.on("routeChangeStart", () => {
       setIsLoading(true);
     });
-    Router.events.on('routeChangeComplete', () => {
+    Router.events.on("routeChangeComplete", () => {
       setIsLoading(false);
     });
 
-    Router.events.on('routeChangeError', () => {
+    Router.events.on("routeChangeError", () => {
       setIsLoading(false);
     });
   }, [Router]);
