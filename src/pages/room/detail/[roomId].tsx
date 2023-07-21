@@ -51,7 +51,7 @@ function Page({}: Props) {
     mutationKey: ["reservation"],
     mutationFn: reserve,
     async onSuccess(data, variables, context) {
-      toast.success("Reserve Success");
+      toast.success("Đặt phòng thành công");
       await router.push("/reservation");
     },
     async onError(error, variables, context) {
@@ -95,7 +95,6 @@ function Page({}: Props) {
       balance_amount: totalAmount,
       hotel_id: query?.data?.__hotel__?.hotel_id,
       room_id: query?.data?.room_id,
-      // room_name: query?.data?.room_name,
     });
   };
 

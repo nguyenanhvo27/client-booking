@@ -11,10 +11,29 @@ yarn dev
 # or
 pnpm dev
 
-tài khoản paypal
-sb-sgwqd26469322@personal.example.com
+tài khoản paypal gốc
+anhvonguyen27@gmail.com
+anhvo282304
+//////////////////////
+tài khoản paypal khách hàng
+sb-eup64326448565@personal.example.com
  pass
-s@P0)9KZ
+9{K@6x@V
+////////////////////
+tài khoản paypal chủ khách sạn
+sb-i8cex26448567@business.example.com
+pass
+2Z)u0#pK
+//////////////////
+ tài khoản quản trị viên
+sb-12xky26189220@business.example.com
+pass
+OQUZ^k8n
+
+
+
+
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

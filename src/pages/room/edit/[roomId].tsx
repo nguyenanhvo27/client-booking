@@ -63,7 +63,6 @@ function Page({}: Props) {
   const goBack = () => {
     router.back();
   };
-  console.log(query.data?.room_name, "hahh");
 
   useEffect(() => {
     if (query.data) {

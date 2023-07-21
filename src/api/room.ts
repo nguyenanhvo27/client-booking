@@ -132,26 +132,8 @@ export const updateRoom = async (data: any,id:any) => {
       formData.append('file', data?.file?.[0]);
       
     }
-
     const response = await axiosInterceptor.patch(`/room/edit/${id}`,formData);
-    // , {
-      
-      // room_name:data.room_name,
-      // prize:data.prize,
-      // facilities:data.facilities,
-      // imgPath: data.file,
-      // "__roomType__": {
-      //   "room_type_id": id,
-      //   "prize": data.prize,
-      //   "capacity":data.capacity,
-      //   "wifi": data.wifi,
-      //   "AC": data.AC,
-      //   "heater": data.heater,
-      //   "parking": data.parking,
-      //   "pool": data.pool,
-      //   "other_facilities": data.other_facilities,
-   // }
-    // });
+    console.log(data,"api")
     return response.data;
 
   } catch (error) {

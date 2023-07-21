@@ -26,7 +26,6 @@ function Page({}: Props) {
     enabled: Object.keys(params).length > 0,
     keepPreviousData: true,
   });
-  console.log(query.data);
 
   return (
     <Layout>

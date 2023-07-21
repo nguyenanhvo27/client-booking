@@ -24,12 +24,12 @@ const navigation = [
     role: "user",
   },
   {
-    name: "Đăng chỗ nghỉ",
+    name: "Đăng Chỗ Nghỉ",
     href: "/register?role=hotelier",
     isPublic: true,
   },
   {
-    name: "Đặt Phòng",
+    name: "Lịch Đặt Phòng Của tôi",
     href: "/reservation?pageSize=10&pageNumber=1",
     role: "user",
   },

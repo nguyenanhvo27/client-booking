@@ -8,23 +8,19 @@ export const getProfile = async (): Promise<any> => {
   } catch (error) {
     throw new Error('Get profile fail!');
   }
-};
+}
 
 export const updateProfile = async (data: any) => {
   try {
     const formData = new FormData();
+    formData.append('first_name', data.first_name);
+    formData.append('last_name', data.last_name);
+    formData.append('email', data.email);
+    formData.append('phone_number', data.phone_number);
+    formData.append('location', data.location);
     if (data?.file) {
       formData.append('file', data?.file?.[0]);
-      
     }
-    if (data?.first_name) {
-      formData.append('first_name', data?.first_name);
-    }
-     formData.append('first_name', data.first_name);
-    formData.append('last_name', data.last_name);
-    formData.append('location', data.location);
-    formData.append('phone_number', data.phone_number);
-
     const response = await axiosInterceptor.patch(
       '/user/profile',
       formData

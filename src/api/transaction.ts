@@ -1,5 +1,4 @@
 import { axiosInterceptor } from '@/config/axios';
-import { log } from 'console';
 
 export const updateTransaction = async (data: any) => {
   try {

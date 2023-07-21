@@ -1,5 +1,4 @@
 import { axiosInterceptor } from '@/config/axios';
-import { log } from 'console';
 import { DateType } from 'react-tailwindcss-datepicker/dist/types';
 
 type TDataReserve = {
@@ -99,6 +98,18 @@ export const success = async (reservation_id: number) => {
     return response.data;
   } catch (error) {
     throw new Error('Update reservation fail!');
+  }
+};
+
+export const getSuccess = async () => {
+  try {
+    const response = await axiosInterceptor.get(
+      '/reservation/getSuccess'
+    );
+
+    return response.data;
+  } catch (error) {
+    throw new Error('Không thể lấy danh sách lịch đặt thành công!');
   }
 };
 

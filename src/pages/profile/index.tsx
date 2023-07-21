@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import Layout from "@/components/layout";
 import { useRouter } from "next/router";
@@ -18,13 +18,13 @@ type Inputs = {
   last_name: string;
   location: string;
   phone_number: string;
+  email: string;
   file: FileList;
 };
 function Page({}: Props) {
   const queryClient = useQueryClient();
   const { back } = useRouter();
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const handleOpenChoose = () => inputRef.current?.click();
   const setImgPath = useImgPathStore((state: any) => state.setImgPath);
 
   const query = useQuery({
@@ -49,16 +49,26 @@ function Page({}: Props) {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: query.isLoading ? {} : query.data,
   });
 
   const [file, setFile] = React.useState<any>(null);
-  const onSubmit: SubmitHandler<Inputs> = (value) => {
-    value.file = file;
-    mutation.mutate(value);
+  const onSubmit: SubmitHandler<Inputs> = (data: any) => {
+    mutation.mutate(data);
   };
+
+  useEffect(() => {
+    if (query.data) {
+      setValue("first_name", query.data?.first_name);
+      setValue("last_name", query.data?.last_name);
+      setValue("phone_number", query.data?.phone_number);
+      setValue("location", query.data?.location);
+    }
+  }, []);
+  console.log(query.data);
 
   return (
     <Layout>
@@ -89,11 +99,9 @@ function Page({}: Props) {
                   <div className="mt-2">
                     <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                       <input
-                        type="Email"
-                        value={query.data?.email}
-                        name="email"
+                        {...register("email")}
                         id="email"
-                        autoComplete="email"
+                        name="email"
                         className="block flex-1 border-0 bg-transparent py-1.5 pl-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         disabled
                       />
@@ -123,22 +131,20 @@ function Page({}: Props) {
                         aria-hidden="true"
                       />
                     )}
-
                     <input
                       type="file"
-                      {...register("file")}
-                      onChange={(e) => setFile(e.target.files)}
-                      className="hidden"
-                      ref={inputRef}
+                      id="file"
                       required
+                      {...register("file", {
+                        validate: {
+                          accept: (value) =>
+                            ["image/png", "image/jpeg", "image/jpg"].includes(
+                              value?.[0]?.type
+                            ),
+                          maxSize: (value) => value?.[0]?.size <= 3000000,
+                        },
+                      })}
                     />
-                    <button
-                      className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                      onClick={handleOpenChoose}
-                      type="button"
-                    >
-                      Change
-                    </button>
                   </div>
                   {errors.file && (
                     <p className="text-red-500">Choose File Error</p>
@@ -165,12 +171,8 @@ function Page({}: Props) {
                   <div className="mt-2">
                     <input
                       type="text"
-                      {...register("first_name", {
-                        value: query.data?.first_name,
-                      })}
-                      defaultValue={query.data?.first_name}
-                      id="first-name"
-                      autoComplete="given-name"
+                      {...register("first_name")}
+                      name="first_name"
                       className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
@@ -186,11 +188,8 @@ function Page({}: Props) {
                   <div className="mt-2">
                     <input
                       type="text"
-                      {...register("last_name", {
-                        value: query.data?.last_name,
-                      })}
-                      defaultValue={query.data?.last_name}
-                      id="last-name"
+                      {...register("last_name")}
+                      name="last_name"
                       autoComplete="family-name"
                       className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
@@ -207,10 +206,8 @@ function Page({}: Props) {
                   <div className="mt-2">
                     <input
                       type="text"
-                      {...register("phone_number", {
-                        value: query.data?.phone_number,
-                      })}
-                      defaultValue={query.data?.phone_number}
+                      {...register("phone_number")}
+                      name="phone_number"
                       id="phone_number"
                       autoComplete="family-name"
                       className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -227,10 +224,8 @@ function Page({}: Props) {
                   </label>
                   <div className="mt-2">
                     <textarea
-                      {...register("location", {
-                        value: query.data?.location,
-                      })}
-                      defaultValue={query.data?.location}
+                      {...register("location")}
+                      name="location"
                       id="location"
                       autoComplete="location"
                       className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

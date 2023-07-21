@@ -6,34 +6,97 @@ import {
   cancelReservation,
   remove,
   success,
+  getSuccess,
 } from "../../api/reservation";
+import {
+  postHotelierTransaction,
+  getHotelierReservation,
+} from "../../api/hotelierTranaction";
 import Layout from "@/components/layout";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Pagination from "@/components/pagination";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import { TfiReload } from "react-icons/tfi";
+import PaymentModalHotelier from "@/components/paymentHotelier";
+import { useForm, SubmitHandler } from "react-hook-form";
 
-type Props = {
-  reservation_id: number;
+type Props = {};
+type Inputs = {
+  hotel_id: number;
+  user_id: number;
+  total: number;
 };
 
-function Page({ reservation_id }: Props) {
+function Page({}: Props) {
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm<Inputs>();
+
   const currentDateTime = new Date();
+  console.log(currentDateTime, "current");
   const vietnamTime = new Date(
     currentDateTime.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
   );
   const formattedTime = vietnamTime.toISOString();
-  console.log(formattedTime, "hotelier");
+  const showButtonPayment = currentDateTime.getDate() <= 5;
+  const getPayment = currentDateTime.getMonth();
+
   const router = useRouter();
   const params = { pageSize: 10, pageNumber: 1, ...router.query };
   const hotel_id =
     typeof router.query.hotelId === "string" ? router.query.hotelId : undefined;
+  const hotelier_transaction_id =
+    typeof router.query.hotelierTransactionId === "string"
+      ? router.query.hotelierTracsaction
+      : undefined;
+  const [getTotal, setGetTotal] = useState(false);
   const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ["reservation", hotel_id],
     queryFn: async () => await getReservationById(hotel_id),
   });
+
+  console.log(query.data, "get");
+
+  const mutationTransaction = useMutation({
+    mutationKey: ["post-hotelier_transaction"],
+    mutationFn: postHotelierTransaction,
+    onSuccess(data, variables, context) {
+      toast.success(" thành công");
+      queryClient.invalidateQueries(["reservation"]);
+    },
+    onError(error, variables, context) {
+      toast.error("không thành công");
+    },
+  });
+  // lấy getSuccess chỉ để tính tổng tiền cả tháng
+  const queryGetSuccess = useQuery({
+    queryKey: ["getReservation"],
+    queryFn: getSuccess,
+    keepPreviousData: true,
+  });
+  console.log(queryGetSuccess.data, "getSuccess");
+
+  const getTotalAmount = (): any => {
+    let total = 0;
+    queryGetSuccess.data?.filteredOrders.forEach((booking: any) => {
+      total += booking.balance_amount;
+    });
+
+    const tenPercent = total * 0.1;
+
+    const roundedTenPercent = Math.round(tenPercent);
+
+    return roundedTenPercent;
+  };
+  const totalAmount = getTotalAmount();
+  console.log(totalAmount, "total");
 
   const acceptReservation = useMutation({
     mutationKey: ["reservation"],
@@ -46,6 +109,7 @@ function Page({ reservation_id }: Props) {
       toast.error("Update fail");
     },
   });
+
   const mutation = useMutation({
     mutationKey: ["reservation"],
     mutationFn: cancelReservation,
@@ -80,6 +144,12 @@ function Page({ reservation_id }: Props) {
     },
   });
 
+  ///////hotelierTransaction
+
+  const queryGetHotelierTransaction = useQuery({
+    queryKey: ["get-hotelier-transaction"],
+    queryFn: getHotelierReservation,
+  });
   const handleCancel = (reservation_id: any) => {
     mutation.mutate(reservation_id);
   };
@@ -95,6 +165,24 @@ function Page({ reservation_id }: Props) {
     reservationSuccess.mutate(reservation_id);
   };
 
+  const handleGetSuccess = () => {
+    mutationTransaction.mutate({
+      total: totalAmount,
+      hotel_id: query.data?.hotel.hotel_id,
+      user_id: query.data?.hotel.__user__.user_id,
+    });
+  };
+  console.log(
+    queryGetHotelierTransaction.data?.[0]?.created_at,
+    "gethotelstatus"
+  );
+  const createdAtDate = new Date(
+    queryGetHotelierTransaction.data?.[0]?.created_at
+  );
+  const month = createdAtDate.getMonth() + 1;
+  console.log(month, "monthj");
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
   return (
     <Layout>
       <div>
@@ -105,7 +193,41 @@ function Page({ reservation_id }: Props) {
           <p className="font-bold text-2xl text-blue-800">
             {query?.data?.hotel?.hotel_name}
           </p>
+          {showButtonPayment ? (
+            <button
+              className="mx-3 w-8 h-8  bg-blue-500 text-black"
+              onClick={handleGetSuccess}
+            >
+              <TfiReload className="w-6 h-5" />
+            </button>
+          ) : (
+            <></>
+          )}
+          {month === currentMonth ? (
+            <div className="flex text-right justify-end">
+              <span className="mx-2 my-1 flex text-xl">
+                {" "}
+                Chiết khấu cho website:
+                <p className="ml-2 font-bold"> {totalAmount} VND</p>
+              </span>
+
+              <p>
+                <PaymentModalHotelier
+                  value={{
+                    amount: Number(totalAmount / 23000).toFixed(2),
+                    hotelier_transaction_id:
+                      queryGetHotelierTransaction.data?.[0]
+                        ?.hotelier_transaction_id,
+                  }}
+                  status={queryGetHotelierTransaction.data?.[0]?.status}
+                />
+              </p>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
+
         <div className="flex justify-center items-center">
           <ul className="divide-y divide-gray-200 dark:divide-gray-700 w-full h-full mt-20 max-w-7xl">
             {query?.data?.reservation?.[0]?.map((reservation: any) => (
@@ -291,7 +413,7 @@ function Page({ reservation_id }: Props) {
                           >
                             Hủy
                           </button>
-                          {formattedTime >= reservation?.check_in ? (
+                          {formattedTime <= reservation?.check_in ? (
                             <button
                               className="h-8 px-4 m-2 text-sm text-white transition-colors duration-150 bg-blue-700 rounded-lg focus:shadow-outline "
                               onClick={() => {

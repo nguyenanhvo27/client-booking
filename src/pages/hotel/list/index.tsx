@@ -33,9 +33,9 @@ const Page = (props: Props) => {
     <Layout>
       <div className="m-auto">
         <div className="bg-white">
-          <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+          <div className="mx-auto px-4 py-16 sm:px-6 sm:py-24  lg:px-8">
             <div className="flex justify-between">
-              <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900">
                 Khách Sạn Của Bạn
               </h2>
               <button
@@ -46,9 +46,9 @@ const Page = (props: Props) => {
                 Post
               </button>
             </div>
-            <div className="p-1.5 w-full inline-block align-middle">
+            <div className=" inline-block align-middle">
               <div className="overflow-hidden border rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className=" divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
                       <th
@@ -91,6 +91,12 @@ const Page = (props: Props) => {
                         scope="col"
                         className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
                       >
+                        DANH SÁCH PHÒNG
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-xs font-bold text-right text-gray-500 uppercase "
+                      >
                         Đặt Phòng
                       </th>
                     </tr>
@@ -106,10 +112,6 @@ const Page = (props: Props) => {
                             src={`${process.env.NEXT_PUBLIC_ENDPOINT}/${hotel?.imgPath}`}
                             alt={`${process.env.NEXT_PUBLIC_ENDPOINT}/${hotel?.imgPath}`}
                             className="h-[300px] w-[900px] object-cover object-center lg:h-full lg:w-full"
-                            key={hotel?.hotel_id}
-                            onClick={async () =>
-                              await handleOnClick(hotel?.hotel_id)
-                            }
                           />
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-800 whitespace-nowrap">
@@ -143,6 +145,17 @@ const Page = (props: Props) => {
                             }
                           >
                             Lịch Đặt Phòng
+                          </button>
+                        </td>
+                        <td className=" text-sm font-medium text-right whitespace-nowrap">
+                          <button
+                            className="h-8 px-4 m-2 text-sm text-white transition-colors duration-150 bg-green-700 rounded-lg focus:shadow-outline hover:bg-green-800"
+                            key={hotel?.hotel_id}
+                            onClick={async () =>
+                              await handleOnClick(hotel?.hotel_id)
+                            }
+                          >
+                            Danh sách phòng
                           </button>
                         </td>
                       </tr>
